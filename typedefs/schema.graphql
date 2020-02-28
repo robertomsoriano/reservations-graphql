@@ -1,0 +1,99 @@
+type Query {
+  posts: [Post!]!,
+  items: [Item!]!,
+  users: [User!]!,
+  fetchUser(id: String!): User,
+  fetchBusiness(id: String!): Business,
+  getAllBusinesses: [Business!],
+  businesses: [Business!]!,
+  reservations: [Reservation!]!,
+}
+
+type Mutation {
+  #Posts
+  createPost(title: String!, desc: String!, author: String!): Boolean!,
+  updatePost(id:String!,title: String!, desc: String!, author: String!): Boolean!,
+  deletePost(id:String!): Boolean!,
+  #Users
+  createUser(fname: String!, lname: String!, email: String!, password: String!, address: String, phone: Number,): Token!,
+  signIn(email: String!, password: String!): Token!,
+  updateUserByEmail( name: String!,  email: String!, password: String!): Boolean!,
+  updateUserPass( name: String!,  email: String!, password: String!, newPassword:String!): Boolean!,
+  deleteUser(id:String!): Boolean!,
+  #Businesses
+  createBusiness(email: String!, name: String!, address: String!,phone: String,categories:[String!], services: String!): Token!,
+  businessSignIn(email: String!, password: String!): BusinessToken!,
+  updateBusiness(id: String!, name: String!, address: String!, services: [String!]!): Boolean!,
+  addBusinessServices(id: String!, service: String!): Boolean!,
+  #Reservations
+  createReservation(business: String!,service: String!,desc: String,date: Date!, time: String!): Boolean!,
+  updateReservation(id: String!,service: String!, date: Date!, time: String!, status: String!, log: String!): Reservation,
+  cancelReservation(id: String!): Reservation,
+  completeReservation(id: String!): Boolean!,
+  feedbackReservation(id: String!, feedback: String!, rating: String!): Reservation
+}
+
+# Schema Types
+scalar Date
+scalar Number
+type Post {
+  id: String!
+  title: String!
+  desc: String!
+  author: String!
+  createdOn: String!
+},
+type Item {
+    name: String!
+  }
+type User{
+  id:String!,
+  fname: String!,
+  lname: String!,
+  email:String!
+  password: String!,
+  address: String,
+  phone: Number,
+  reservations: [Reservation],
+  register_date: Date!,
+  role: [String!],
+  business: Business
+}
+
+type Token{
+  token: String!,
+  user: User!
+},
+type Business{
+  user: User!,
+  id: String!,
+  name: String!,
+  address: String!,
+  email: String!,
+  phone: Number,
+  categories: [String!],
+  services: [String!]!,
+  customers: [User!],
+  reservations: [Reservation!],
+  register_date: Date!,
+  role: [String!]
+}
+type BusinessToken{
+  token: String!,
+  business: Business!
+}
+type Reservation {
+  user: User!,
+  business: Business!,
+  id: String!,
+  service: String!,
+  desc: String,
+  date: Date!,
+  time: String!,
+  createdOn: Date,
+  status: String, #set as Non-Null   # TODO
+  log: [String!],
+  feedback: String,
+  rating: String
+},
+
